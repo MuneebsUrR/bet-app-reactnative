@@ -1,10 +1,12 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, StatusBar, Platform } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { useNavigation } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { useNavigation, useRouter } from 'expo-router';
 const filters = ['Cash Out', 'Live Now', 'Unsettled', 'Settled', 'All'];
+import Octicons from '@expo/vector-icons/Octicons';
+import { Image } from 'react-native';
+
 
 const sampleBets = [
   {
@@ -59,7 +61,9 @@ export default function MyBets() {
       headerShown: false,
     });
   }
-);
+  );
+  const router = useRouter();
+
 
   const BetCard = ({ bet }) => (
     <View style={styles.betCard}>
@@ -69,7 +73,7 @@ export default function MyBets() {
           <MaterialIcons name="share" size={20} color="#00FF9D" />
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.selectionContainer}>
         <MaterialIcons name="check-circle" size={20} color="#00FF9D" />
         <View style={styles.selectionInfo}>
@@ -102,12 +106,19 @@ export default function MyBets() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#235441" barStyle="light-content" />
+    <View style={styles.container}>
+      <View style={styles.statusBarBackground} />
+
+      {/* Status bar settings */}
+      <StatusBar
+        barStyle="light-content" // White text/icons
+        translucent={true} // Makes status bar transparent
+        backgroundColor="transparent" // Green handled by View
+      />
       <View style={styles.header}>
         <Text style={styles.sessionText}>Session 00:09</Text>
       </View>
-      
+
       <Text style={styles.title}>My Bets</Text>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersContainer}>
@@ -140,44 +151,59 @@ export default function MyBets() {
       </ScrollView>
 
       <View style={styles.bottomNav}>
-        <View style={styles.navItem}>
-          <MaterialCommunityIcons name="home" size={24} color="#8E8E93" />
-          <Text style={styles.navLabel}>Home</Text>
-        </View>
-        <View style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem}>
+        <Octicons name="home" size={24} color="#8E8E93" />
+        <Text style={styles.navLabel}>Home</Text>
+        {/* <Image 
+            source={require('../../assets/images/home-removebg-preview.png')}
+            style={styles.navIcon}
+          />
+          <Text style={styles.navLabel}>€0.60</Text> */}
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/all-sports')} style={[styles.navItem, styles.activeNavItem]}>
           <AntDesign name="search1" size={24} color="#8E8E93" />
           <Text style={styles.navLabel}>All Sports</Text>
-        </View>
-        <View style={styles.navItem}>
-          <MaterialCommunityIcons name="soccer-field" size={24} color="#8E8E93" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+        <Image 
+            source={require('../assets/images/file (1).png')}
+            style={styles.navIcon}
+          />
           <Text style={styles.navLabel}>In-Play</Text>
-        </View>
-        <View style={[styles.navItem, styles.activeNavItem]}>
-          <AntDesign name="checkcircle" size={24} color="#00FF9D" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <AntDesign name="checkcircle" size={23} color="#137a5a"  />
           <Text style={[styles.navLabel, styles.activeNavLabel]}>My Bets</Text>
-        </View>
-        <View style={styles.navItem}>
-          <FontAwesome5 name="dice" size={24} color="#8E8E93" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+        <Image 
+            source={require('../assets/images/casino_prev_ui.png')}
+            style={styles.navIcon}
+
+          />
           <Text style={styles.navLabel}>Casino</Text>
-        </View>
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#282828',
+    backgroundColor: '#282828', // Gray background for the rest of the screen
+  },
+  statusBarBackground: {
+    height: Platform.OS === 'android' ? StatusBar.currentHeight : 44, // Adjust for iOS and Android
+    backgroundColor: '#235441', // Green for status bar
   },
   header: {
     padding: 16,
-    marginTop:20,
-    backgroundColor:'#235441'
+    backgroundColor: '#235441',
   },
   sessionText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
   },
   title: {
     color: '#FFFFFF',
@@ -288,29 +314,26 @@ const styles = StyleSheet.create({
   bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 16,
-    backgroundColor: '#2C2C2E',
-    borderTopWidth: 0.5,
-    borderTopColor: '#3A3A3C',
+    padding: 15,
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 25,
   },
   navItem: {
     alignItems: 'center',
-  },
-  navText: {
-    color: '#FFFFFF',
-    marginBottom: 4,
   },
   navLabel: {
     color: '#8E8E93',
     fontSize: 12,
     marginTop: 4,
   },
-  activeNavItem: {
-    backgroundColor: '#3A3A3C',
-    borderRadius: 8,
-    padding: 8,
-  },
   activeNavLabel: {
-    color: '#26ffbb',
+    color: '#137a5a',
+  },
+  navIcon: {
+    width: 40,
+    height: 24,
+  },
+  activeNavIcon: {
+    tintColor: '#137a5a'
   },
 });
