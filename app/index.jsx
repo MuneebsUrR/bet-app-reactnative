@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, StatusBar, Platform } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -6,55 +6,35 @@ import { useNavigation, useRouter } from 'expo-router';
 const filters = ['Cash Out', 'Live Now', 'Unsettled', 'Settled', 'All'];
 import Octicons from '@expo/vector-icons/Octicons';
 import { Image } from 'react-native';
-
-
-const sampleBets = [
-  {
-    id: 1,
-    amount: 0.10,
-    type: 'Single',
-    selection: 'Sabah FC U23 or Draw',
-    odds: 1.14,
-    betType: 'Double Chance',
-    team1: 'Sabah FC U23',
-    team2: 'Kuala Lumpur FA U23',
-    stake: 0.10,
-    return: 0.12,
-    status: 'Returned',
-    settled: true
-  },
-  {
-    id: 2,
-    amount: 0.25,
-    type: 'Single',
-    selection: 'Manchester United',
-    odds: 2.00,
-    betType: 'Match Winner',
-    team1: 'Manchester United',
-    team2: 'Arsenal',
-    stake: 0.25,
-    return: 0.50,
-    status: 'Returned',
-    settled: true
-  },
-  {
-    id: 3,
-    amount: 0.15,
-    type: 'Single',
-    selection: 'Over 2.5 Goals',
-    odds: 1.85,
-    betType: 'Total Goals',
-    team1: 'Real Madrid',
-    team2: 'Barcelona',
-    stake: 0.15,
-    return: 0.28,
-    status: 'Returned',
-    settled: true
-  }
-];
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from './configs/Firebase';
 
 export default function MyBets() {
   const [activeFilter, setActiveFilter] = useState('Settled');
+  const [sampleBets, setSampleBets] = useState([]);
+  const [totalBalance, setTotalBalance] = useState(0);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const docRef = doc(db, "data", "balance");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+       
+        setTotalBalance(docSnap.data().totalBalance);
+      } else {
+        // docSnap.data() will be undefined in this case
+        alert("No such document!");
+      }
+
+    }
+    fetchData();
+  }
+    , []);
+
+
   const navigation = useNavigation();
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -62,45 +42,76 @@ export default function MyBets() {
     });
   }
   );
+
+
+
   const router = useRouter();
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const docRef = doc(db, "data", "bets");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+       
+        setSampleBets(docSnap.data().bets);
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+
+    }
+    fetchData();
+  }
+    , [sampleBets]);
 
 
   const BetCard = ({ bet }) => (
     <View style={styles.betCard}>
       <View style={styles.betHeader}>
-        <Text style={styles.betAmount}>€{bet.amount.toFixed(2)} {bet.type}</Text>
+        <Text style={styles.betAmount}>€{bet?.amount} {bet?.type}</Text>
         <TouchableOpacity>
-          <MaterialIcons name="share" size={20} color="#00FF9D" />
+          <Text style={{color: '#00FF9D', fontSize: 13, fontWeight: 'bold'}}>Share</Text>
         </TouchableOpacity>
       </View>
+      <View style={{ height: 1, backgroundColor: 'grey',marginBottom:'10' }} />
 
       <View style={styles.selectionContainer}>
-        <MaterialIcons name="check-circle" size={20} color="#00FF9D" />
+      <View style={styles.iconOverlay}>
+        <FontAwesome name="circle" size={18} color="white" />
+        <MaterialIcons name="check-circle" size={20} color="#1A966E" style={styles.checkIcon} />
+      </View>
         <View style={styles.selectionInfo}>
-          <Text style={styles.selectionText}>{bet.selection} {bet.odds}</Text>
-          <Text style={styles.betTypeText}>{bet.betType}</Text>
+          <Text style={styles.selectionText}>{bet?.selection} {bet?.odds}</Text>
+          <Text style={styles.betTypeText}>{bet?.betType}</Text>
         </View>
       </View>
 
       <View style={styles.teamsContainer}>
-        <Text style={styles.teamText}>{bet.team1}</Text>
-        <Text style={styles.teamText}>{bet.team2}</Text>
+        <Text style={styles.teamText}>{bet?.team1}</Text>
+        <Text style={styles.teamText}>{bet?.team2}</Text>
       </View>
 
       <View style={styles.stakeReturnContainer}>
         <View>
           <Text style={styles.labelText}>Stake</Text>
-          <Text style={styles.valueText}>€{bet.stake.toFixed(2)}</Text>
+          <Text style={styles.valueText}>€{bet?.stake}</Text>
         </View>
         <View>
           <Text style={styles.labelText}>Return</Text>
-          <Text style={styles.valueText}>€{bet.return.toFixed(2)}</Text>
+          <Text style={{
+            color: 'lightgrey',
+            fontSize: 16,
+            fontWeight: 'bold',
+          }}>€{bet?.return}</Text>
         </View>
       </View>
 
       <View style={styles.returnedContainer}>
-        <MaterialIcons name="check-circle" size={20} color="#00FF9D" />
-        <Text style={styles.returnedText}>€{bet.return.toFixed(2)} {bet.status}</Text>
+      <MaterialIcons name="check-circle-outline" size={20} color="#00FF9D" />
+      
+        <Text style={styles.returnedText}>€{bet?.return} {bet?.status}</Text>
       </View>
     </View>
   );
@@ -116,7 +127,11 @@ export default function MyBets() {
         backgroundColor="transparent" // Green handled by View
       />
       <View style={styles.header}>
-        <Text style={styles.sessionText}>Session 00:09</Text>
+        {/* <Text style={styles.sessionText}>Session 00:09</Text> */}
+        <Image 
+        source={require('../assets/images/image_prev_ui.png')}
+        style={{width: 100, height: 30, marginLeft: 'auto'}}
+          />
       </View>
 
       <Text style={styles.title}>My Bets</Text>
@@ -124,26 +139,26 @@ export default function MyBets() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersContainer}>
         {filters.map((filter) => (
           <TouchableOpacity
-            key={filter}
-            style={[
-              styles.filterButton,
-              activeFilter === filter && styles.activeFilter
-            ]}
-            onPress={() => setActiveFilter(filter)}
+        key={filter}
+        style={[
+          styles.filterButton,
+          activeFilter === filter && styles.activeFilter
+        ]}
+        onPress={() => setActiveFilter(filter)}
           >
-            <Text style={[
-              styles.filterText,
-              activeFilter === filter && styles.activeFilterText
-            ]}>
-              {filter}
-            </Text>
+        <Text style={[
+          styles.filterText,
+          activeFilter === filter && styles.activeFilterText
+        ]}>
+          {filter}
+        </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
       <ScrollView style={styles.betsContainer}>
-        {sampleBets.map((bet) => (
-          <BetCard key={bet.id} bet={bet} />
+        {sampleBets && sampleBets.map((bet) => (
+          <BetCard key={bet?.id} bet={bet} />
         ))}
         <Text style={styles.historyText}>
           View older settled bets in your Account History
@@ -153,10 +168,10 @@ export default function MyBets() {
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
         <Octicons name="home" size={24} color="#8E8E93" />
-        <Text style={styles.navLabel}>Home</Text>
+        <Text style={styles.navLabel}>€{totalBalance}</Text>
         {/* <Image 
-            source={require('../../assets/images/home-removebg-preview.png')}
-            style={styles.navIcon}
+        source={require('../../assets/images/home-removebg-preview.png')}
+        style={styles.navIcon}
           />
           <Text style={styles.navLabel}>€0.60</Text> */}
         </TouchableOpacity>
@@ -195,11 +210,11 @@ const styles = StyleSheet.create({
   },
   statusBarBackground: {
     height: Platform.OS === 'android' ? StatusBar.currentHeight : 44, // Adjust for iOS and Android
-    backgroundColor: '#235441', // Green for status bar
+    backgroundColor: '#055441', // Green for status bar
   },
   header: {
     padding: 16,
-    backgroundColor: '#235441',
+    backgroundColor: '#055441',
   },
   sessionText: {
     color: '#FFFFFF',
@@ -264,6 +279,18 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  iconOverlay: {
+    position: 'relative',
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkIcon: {
+    position: 'absolute',
+    top: 2,
+    left: 2,
   },
   betTypeText: {
     color: '#8E8E93',
@@ -336,4 +363,5 @@ const styles = StyleSheet.create({
   activeNavIcon: {
     tintColor: '#137a5a'
   },
+
 });

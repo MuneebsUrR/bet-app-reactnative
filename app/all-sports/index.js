@@ -328,7 +328,7 @@
 // });
 
 
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect,useState } from 'react';
 import { 
   View, 
   Text, 
@@ -343,6 +343,9 @@ import {
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation, useRouter } from 'expo-router';
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from '../configs/Firebase';
+
 
 const trendingSports = [
   'Upcoming Soccer',
@@ -397,6 +400,27 @@ export default function MyBets() {
   const navigation = useNavigation();
   const router = useRouter();
 
+  const [totalBalance, setTotalBalance] = useState(0);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const docRef = doc(db, "data", "balance");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+       
+        setTotalBalance(docSnap.data().totalBalance);
+      } else {
+        // docSnap.data() will be undefined in this case
+        alert("No such document!");
+      }
+
+    }
+    fetchData();
+  }
+    , []);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -413,7 +437,11 @@ export default function MyBets() {
       />
 
       <View style={styles.header}>
-        <Text style={styles.sessionText}>Session 00:48</Text>
+        {/* <Text style={styles.sessionText}>Session 00:48</Text> */}
+        <Image 
+        source={require('../../assets/images/image_prev_ui.png')}
+        style={{width: 100, height: 30, marginLeft: 'auto'}}
+          />
       </View>
 
       <View style={styles.titleContainer}>
@@ -487,7 +515,7 @@ export default function MyBets() {
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
         <Octicons name="home" size={24} color="#8E8E93" />
-        <Text style={styles.navLabel}>Home</Text>
+        <Text style={styles.navLabel}>€{totalBalance}</Text>
         {/* <Image 
             source={require('../../assets/images/home-removebg-preview.png')}
             style={styles.navIcon}
