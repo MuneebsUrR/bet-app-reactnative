@@ -9,30 +9,31 @@ import { Image } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from './configs/Firebase';
+import { useAppContext } from '@/context/AppContext';
 
 export default function MyBets() {
   const [activeFilter, setActiveFilter] = useState('Settled');
-  const [sampleBets, setSampleBets] = useState([]);
-  const [totalBalance, setTotalBalance] = useState(0);
+  
+  const { sampleBets, setSampleBets, totalBalance, setTotalBalance } = useAppContext();
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const docRef = doc(db, "data", "balance");
-      const docSnap = await getDoc(docRef);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const docRef = doc(db, "data", "balance");
+  //     const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
+  //     if (docSnap.exists()) {
        
-        setTotalBalance(docSnap.data().totalBalance);
-      } else {
-        // docSnap.data() will be undefined in this case
-        alert("No such document!");
-      }
+  //       setTotalBalance(docSnap.data().totalBalance);
+  //     } else {
+  //       // docSnap.data() will be undefined in this case
+  //       alert("No such document!");
+  //     }
 
-    }
-    fetchData();
-  }
-    , []);
+  //   }
+  //   fetchData();
+  // }
+  //   , []);
 
 
   const navigation = useNavigation();
@@ -47,24 +48,24 @@ export default function MyBets() {
 
   const router = useRouter();
 
+ 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const docRef = doc(db, "data", "bets");
+  //     const docSnap = await getDoc(docRef);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const docRef = doc(db, "data", "bets");
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
+  //     if (docSnap.exists()) {
        
-        setSampleBets(docSnap.data().bets);
-      } else {
-        // docSnap.data() will be undefined in this case
-        console.log("No such document!");
-      }
+  //       setSampleBets(docSnap.data().bets);
+  //     } else {
+  //       // docSnap.data() will be undefined in this case
+  //       console.log("No such document!");
+  //     }
 
-    }
-    fetchData();
-  }
-    , [sampleBets]);
+  //   }
+  //   fetchData();
+  // }
+  //   , [sampleBets]);
 
 
   const BetCard = ({ bet }) => (
@@ -167,7 +168,7 @@ export default function MyBets() {
 
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
-        <Octicons name="home" size={24} color="#8E8E93" />
+        <Octicons name="home" size={23} color="#8E8E93" />
         <Text style={styles.navLabel}>€{totalBalance}</Text>
         {/* <Image 
         source={require('../../assets/images/home-removebg-preview.png')}
@@ -176,7 +177,7 @@ export default function MyBets() {
           <Text style={styles.navLabel}>€0.60</Text> */}
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push('/all-sports')} style={[styles.navItem, styles.activeNavItem]}>
-          <AntDesign name="search1" size={24} color="#8E8E93" />
+          <AntDesign name="search1" size={23} color="#8E8E93" />
           <Text style={styles.navLabel}>All Sports</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
@@ -343,7 +344,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 15,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 25,
+    paddingVertical: 20,
   },
   navItem: {
     alignItems: 'center',

@@ -357,7 +357,7 @@ const trendingSports = [
   'EFL Cup'
 ];
 import Octicons from '@expo/vector-icons/Octicons';
-
+import { AppProvider, useAppContext } from '../../context/AppContext';
 
 const mostUsedSports = [
   { 
@@ -365,7 +365,7 @@ const mostUsedSports = [
     image: require('../../assets/images/zClass_Soccer.png') // Assuming the image is in assets folder
   },
   { 
-    name: 'BASKETBALL', 
+    name: 'BASKETBALL',   
     image: require('../../assets/images/zClass_Basketball.png')
   },
   { 
@@ -399,27 +399,9 @@ const allSports = [
 export default function MyBets() {
   const navigation = useNavigation();
   const router = useRouter();
+  const { totalBalance } = useAppContext();
 
-  const [totalBalance, setTotalBalance] = useState(0);
 
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const docRef = doc(db, "data", "balance");
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-       
-        setTotalBalance(docSnap.data().totalBalance);
-      } else {
-        // docSnap.data() will be undefined in this case
-        alert("No such document!");
-      }
-
-    }
-    fetchData();
-  }
-    , []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -428,6 +410,7 @@ export default function MyBets() {
   }, []);
 
   return (
+    
     <View style={styles.container}>
       <View style={styles.statusBarBackground} />
       <StatusBar
@@ -514,7 +497,7 @@ export default function MyBets() {
 
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
-        <Octicons name="home" size={24} color="#8E8E93" />
+        <Octicons name="home" size={23} color="#8E8E93" />
         <Text style={styles.navLabel}>€{totalBalance}</Text>
         {/* <Image 
             source={require('../../assets/images/home-removebg-preview.png')}
@@ -523,7 +506,7 @@ export default function MyBets() {
           <Text style={styles.navLabel}>€0.60</Text> */}
         </TouchableOpacity>
         <View style={[styles.navItem, styles.activeNavItem]}>
-          <AntDesign name="search1" size={24} color="#137a5a" />
+          <AntDesign name="search1" size={23} color="#137a5a" />
           <Text style={[styles.navLabel, styles.activeNavLabel]}>All Sports</Text>
         </View>
         <TouchableOpacity style={styles.navItem}>
@@ -702,7 +685,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 15,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 25,
+    paddingVertical: 20,
   },
   navItem: {
     alignItems: 'center',
