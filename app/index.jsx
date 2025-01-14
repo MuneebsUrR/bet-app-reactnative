@@ -109,7 +109,12 @@ export default function MyBets() {
         </View>
       </View>
 
-      <View style={styles.returnedContainer}>
+      {/* <View style={styles.returnedContainer}>
+      <MaterialIcons name="check-circle-outline" size={20} color="#00FF9D" />
+      
+        <Text style={styles.returnedText}>€{bet?.return} {bet?.status}</Text>
+      </View> */}
+       <View style={styles.returnedContainer}>
       <MaterialIcons name="check-circle-outline" size={20} color="#00FF9D" />
       
         <Text style={styles.returnedText}>€{bet?.return} {bet?.status}</Text>
@@ -253,7 +258,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   betCard: {
-    backgroundColor: '#343a38',
+    backgroundColor: '#323b38',
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -319,13 +324,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+
   returnedContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3A3A3C',
-    padding: 12,
-    borderRadius: 8,
+    backgroundColor: '#424645',
+    marginHorizontal: -16,
+    marginBottom: -16,
+    padding: 14,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
   },
   returnedText: {
     color: '#26ffbb',

@@ -2,7 +2,7 @@
   "expo": {
     "name": "bet365",
     "slug": "bet365",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/unnamed.webp",
     "scheme": "myapp",
@@ -14,8 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#282828"
+        "foregroundImage": "./assets/images/unnamed.webp"
       },
       "package": "com.vanilla_icee.bet365"
     },
