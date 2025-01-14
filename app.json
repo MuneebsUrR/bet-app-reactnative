@@ -4,7 +4,7 @@
     "slug": "bet365",
     "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/images/unnamed.webp",
+    "icon": "./assets/images/unnamed.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/unnamed.webp"
+        "foregroundImage": "./assets/images/unnamed.png",
+        "backgroundColor": "#007C5B"
       },
       "package": "com.vanilla_icee.bet365"
     },

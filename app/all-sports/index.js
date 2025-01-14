@@ -1,13 +1,13 @@
-import React, { useEffect, useLayoutEffect,useState } from 'react';
-import { 
-  View, 
-  Text, 
-  ScrollView, 
-  TouchableOpacity, 
-  StyleSheet, 
-  StatusBar, 
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
   Platform,
-  TextInput, 
+  TextInput,
   Image
 } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -30,23 +30,23 @@ import Octicons from '@expo/vector-icons/Octicons';
 import { AppProvider, useAppContext } from '../../context/AppContext';
 
 const mostUsedSports = [
-  { 
-    name: 'SOCCER', 
+  {
+    name: 'SOCCER',
     image: require('../../assets/images/zClass_Soccer.png') // Assuming the image is in assets folder
   },
-  { 
-    name: 'BASKETBALL',   
+  {
+    name: 'BASKETBALL',
     image: require('../../assets/images/zClass_Basketball.png')
   },
-  { 
-    name: 'TENNIS', 
+  {
+    name: 'TENNIS',
     image: require('../../assets/images/zClass_Tennis.png')
   }
 ];
 
 
 const allSports = [
-  { 
+  {
     title: 'AMERICAN FOOTBALL',
     image: require('../../assets/images/rugby-ball.png'),
     style: { width: 24, height: 24 },
@@ -61,7 +61,7 @@ const allSports = [
   {
     title: 'BASKETBALL',
     image: require('../../assets/images/zClass_Basketball.png'),
-    style: { width: 27, height: 27,marginLeft: 2 },
+    style: { width: 27, height: 27, marginLeft: 2 },
     subItems: ['Upcoming Matches', 'NBA']
   }
 ];
@@ -80,7 +80,7 @@ export default function MyBets() {
   }, []);
 
   return (
-    
+
     <View style={styles.container}>
       <View style={styles.statusBarBackground} />
       <StatusBar
@@ -91,10 +91,10 @@ export default function MyBets() {
 
       <View style={styles.header}>
         {/* <Text style={styles.sessionText}>Session 00:48</Text> */}
-        <Image 
-        source={require('../../assets/images/image_prev_ui.png')}
-        style={{width: 100, height: 30, marginLeft: 'auto'}}
-          />
+        <Image
+          source={require('../../assets/images/image_prev_ui.png')}
+          style={{ width: 100, height: 30, marginLeft: 'auto' }}
+        />
       </View>
 
       <View style={styles.titleContainer}>
@@ -133,7 +133,7 @@ export default function MyBets() {
           <View style={styles.mostUsedContainer}>
             {mostUsedSports.map((sport, index) => (
               <TouchableOpacity key={index} style={styles.mostUsedItem}>
-                <Image 
+                <Image
                   source={sport.image}
                   style={styles.sportIcon}
                   resizeMode="contain"
@@ -149,7 +149,7 @@ export default function MyBets() {
           {allSports.map((sport, index) => (
             <TouchableOpacity key={index} style={styles.sportItem}>
               <View style={styles.sportHeader}>
-              <Image 
+                <Image
                   source={sport.image}
                   style={sport.style}
                   resizeMode="contain"
@@ -167,33 +167,33 @@ export default function MyBets() {
 
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
-        <Octicons name="home" size={21} color="#8E8E93" />
-        <Text style={styles.navLabel}>€{totalBalance}</Text>
-        {/* <Image 
+          <Octicons name="home" size={20} color="#8E8E93" />
+          <Text style={styles.navLabel}>€{totalBalance}</Text>
+          {/* <Image 
             source={require('../../assets/images/home-removebg-preview.png')}
             style={styles.navIcon}
           />
           <Text style={styles.navLabel}>€0.60</Text> */}
         </TouchableOpacity>
         <View style={[styles.navItem, styles.activeNavItem]}>
-          <AntDesign name="search1" size={21} color="#137a5a" />
+          <AntDesign name="search1" size={20} color="#137a5a" />
           <Text style={[styles.navLabel, styles.activeNavLabel]}>All Sports</Text>
         </View>
         <TouchableOpacity style={styles.navItem}>
-        <Image 
+          <Image
             source={require('../../assets/images/file (1).png')}
             style={styles.navIcon}
           />
           <Text style={styles.navLabel}>In-Play</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem} onPress={() => router.push('/')}>
-         
-          <MaterialIcons name="check-circle-outline" size={21} color="#8E8E93" />
-      
+
+          <MaterialIcons name="check-circle-outline" size={20} color="#8E8E93" />
+
           <Text style={styles.navLabel}>My Bets</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
-        <Image 
+          <Image
             source={require('../../assets/images/casino_prev_ui.png')}
             style={styles.navIcon}
 
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   allSportsIcon: {
     width: 38,
     height: 28,
-    marginBottom : 4,
+    marginBottom: 4,
   },
   sportHeader: {
     flexDirection: 'row',
@@ -357,22 +357,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 15,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 16,
+    paddingVertical: 11,
   },
   navItem: {
     alignItems: 'center',
   },
   navLabel: {
     color: '#8E8E93',
-    fontSize: 11,
+    fontSize: 10.5,
     marginTop: 4,
   },
   activeNavLabel: {
     color: '#137a5a',
   },
   navIcon: {
-    width: 40,
-    height: 22,
+    width: 38,
+    height: 21,
   },
   activeNavIcon: {
     tintColor: '#137a5a'

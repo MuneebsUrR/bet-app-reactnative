@@ -27,23 +27,23 @@ const BetCard = ({ bet }) => {
 
   const containerHeight = animatedHeight.interpolate({
     inputRange: [0, 1],
-    outputRange: [70, 282] 
+    outputRange: [70, 278]
   });
 
   const contentOpacity = animatedHeight;
 
   return (
     <Animated.View style={[styles.betCard, { height: containerHeight, overflow: 'hidden' }]}>
+        <TouchableOpacity onPress={toggleExpand}>
       <View style={styles.betHeader}>
         <Text style={styles.betAmount}>€{bet?.amount} {bet?.type}
-          <View style={{paddingLeft:8}}></View>
-         {!isExpanded && <Text style={{ color: '#8E8E93', fontSize: 11, fontWeight: 'bold' }}> {bet?.selection} </Text>}
+          <View style={{ paddingLeft: 8 }}></View>
+          {!isExpanded && <Text style={{ color: '#8E8E93', fontSize: 11, fontWeight: 'bold' }}> {bet?.selection} </Text>}
         </Text>
-        <TouchableOpacity onPress={toggleExpand}>
           <Text style={{ color: '#00FF9D', fontSize: 13, fontWeight: 'bold' }}>Share</Text>
 
-        </TouchableOpacity>
       </View>
+        </TouchableOpacity>
       {/* hiding the line if not isexpanded */}
       {isExpanded && <View style={{ height: 1, backgroundColor: 'grey', marginBottom: 10 }} />}
       <Animated.View style={[styles.expandableContent, { opacity: contentOpacity }]}>
@@ -82,7 +82,7 @@ const BetCard = ({ bet }) => {
       <View style={[
         styles.returnedContainer,
       ]}>
-        <MaterialIcons name="check-circle-outline" size={20} color="#00FF9D" />
+        <MaterialIcons name="check-circle-outline" size={19} color="#00FF9D" />
         <Text style={styles.returnedText}>€{bet?.return} {bet?.status}</Text>
       </View>
     </Animated.View>
@@ -158,7 +158,7 @@ export default function MyBets() {
 
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
-          <Octicons name="home" size={21} color="#8E8E93" />
+          <Octicons name="home" size={20} color="#8E8E93" />
           <Text style={styles.navLabel}>€{totalBalance}</Text>
           {/* <Image 
         source={require('../../assets/images/home-removebg-preview.png')}
@@ -167,7 +167,7 @@ export default function MyBets() {
           <Text style={styles.navLabel}>€0.60</Text> */}
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push('/all-sports')} style={[styles.navItem, styles.activeNavItem]}>
-          <AntDesign name="search1" size={21} color="#8E8E93" />
+          <AntDesign name="search1" size={20} color="#8E8E93" />
           <Text style={styles.navLabel}>All Sports</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
@@ -178,7 +178,7 @@ export default function MyBets() {
           <Text style={styles.navLabel}>In-Play</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
-          <AntDesign name="checkcircle" size={21} color="#137a5a" />
+          <AntDesign name="checkcircle" size={20} color="#137a5a" />
           <Text style={[styles.navLabel, styles.activeNavLabel]}>My Bets</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   },
   selectionText: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   iconOverlay: {
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   },
   betTypeText: {
     color: '#8E8E93',
-    fontSize: 14,
+    fontSize: 13,
   },
   teamsContainer: {
     marginBottom: 16,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   returnedText: {
     color: '#26ffbb',
     marginLeft: 8,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   historyText: {
@@ -340,22 +340,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 15,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 16,
+    paddingVertical: 11,
   },
   navItem: {
     alignItems: 'center',
   },
   navLabel: {
     color: '#8E8E93',
-    fontSize: 11,
+    fontSize: 10.5,
     marginTop: 4,
   },
   activeNavLabel: {
     color: '#137a5a',
   },
   navIcon: {
-    width: 40,
-    height: 22,
+    width: 38,
+    height: 21,
   },
   activeNavIcon: {
     tintColor: '#137a5a'
