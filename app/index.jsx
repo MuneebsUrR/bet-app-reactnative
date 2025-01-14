@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#FFFFFF',
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: 'bold',
     padding: 16,
   },
@@ -237,18 +237,20 @@ const styles = StyleSheet.create({
     maxHeight: 50,
   },
   filterButton: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
     paddingVertical: 8,
     marginRight: 8,
     borderRadius: 20,
   },
   activeFilter: {
     backgroundColor: '#26ffbb',
-    height: 38,
+    height: 30,
+    paddingTop: 7,
   },
   filterText: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 12.5,
+    fontWeight:'semibold',
   },
   activeFilterText: {
     color: '#000000',
@@ -353,7 +355,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 15,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 20,
+    paddingVertical: 18,
   },
   navItem: {
     alignItems: 'center',
