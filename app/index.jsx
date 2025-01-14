@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, StatusBar, Platform } from 'react-native';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, StatusBar, Platform, Animated } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation, useRouter } from 'expo-router';
@@ -7,33 +7,94 @@ const filters = ['Cash Out', 'Live Now', 'Unsettled', 'Settled', 'All'];
 import Octicons from '@expo/vector-icons/Octicons';
 import { Image } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from './configs/Firebase';
 import { useAppContext } from '@/context/AppContext';
+
+
+
+const BetCard = ({ bet }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const animatedHeight = useRef(new Animated.Value(1)).current;
+
+  const toggleExpand = () => {
+    Animated.spring(animatedHeight, {
+      toValue: isExpanded ? 0 : 1,
+      useNativeDriver: false,
+      tension: 40,
+      friction: 8
+    }).start();
+    setIsExpanded(!isExpanded);
+  };
+
+  const containerHeight = animatedHeight.interpolate({
+    inputRange: [0, 1],
+    outputRange: [70, 282] 
+  });
+
+  const contentOpacity = animatedHeight;
+
+  return (
+    <Animated.View style={[styles.betCard, { height: containerHeight, overflow: 'hidden' }]}>
+      <View style={styles.betHeader}>
+        <Text style={styles.betAmount}>€{bet?.amount} {bet?.type}
+          <View style={{paddingLeft:8}}></View>
+         {!isExpanded && <Text style={{ color: '#8E8E93', fontSize: 11, fontWeight: 'bold' }}> {bet?.selection} </Text>}
+        </Text>
+        <TouchableOpacity onPress={toggleExpand}>
+          <Text style={{ color: '#00FF9D', fontSize: 13, fontWeight: 'bold' }}>Share</Text>
+
+        </TouchableOpacity>
+      </View>
+      {/* hiding the line if not isexpanded */}
+      {isExpanded && <View style={{ height: 1, backgroundColor: 'grey', marginBottom: 10 }} />}
+      <Animated.View style={[styles.expandableContent, { opacity: contentOpacity }]}>
+        <View style={styles.selectionContainer}>
+          <View style={styles.iconOverlay}>
+            <FontAwesome name="circle" size={18} color="white" />
+            <MaterialIcons name="check-circle" size={20} color="#1A966E" style={styles.checkIcon} />
+          </View>
+          <View style={styles.selectionInfo}>
+            <Text style={styles.selectionText}>{bet?.selection} {bet?.odds}</Text>
+            <Text style={styles.betTypeText}>{bet?.betType}</Text>
+          </View>
+        </View>
+
+        <View style={styles.teamsContainer}>
+          <Text style={styles.teamText}>{bet?.team1}</Text>
+          <Text style={styles.teamText}>{bet?.team2}</Text>
+        </View>
+
+        <View style={styles.stakeReturnContainer}>
+          <View>
+            <Text style={styles.labelText}>Stake</Text>
+            <Text style={styles.valueText}>€{bet?.stake}</Text>
+          </View>
+          <View>
+            <Text style={styles.labelText}>Return</Text>
+            <Text style={{
+              fontSize: 15,
+              color: 'lightgrey',
+              fontWeight: 'bold'
+            }}>€{bet?.return}</Text>
+          </View>
+        </View>
+      </Animated.View>
+
+      <View style={[
+        styles.returnedContainer,
+      ]}>
+        <MaterialIcons name="check-circle-outline" size={20} color="#00FF9D" />
+        <Text style={styles.returnedText}>€{bet?.return} {bet?.status}</Text>
+      </View>
+    </Animated.View>
+  );
+};
+
+
 
 export default function MyBets() {
   const [activeFilter, setActiveFilter] = useState('Settled');
-  
+
   const { sampleBets, setSampleBets, totalBalance, setTotalBalance } = useAppContext();
-
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const docRef = doc(db, "data", "balance");
-  //     const docSnap = await getDoc(docRef);
-
-  //     if (docSnap.exists()) {
-       
-  //       setTotalBalance(docSnap.data().totalBalance);
-  //     } else {
-  //       // docSnap.data() will be undefined in this case
-  //       alert("No such document!");
-  //     }
-
-  //   }
-  //   fetchData();
-  // }
-  //   , []);
 
 
   const navigation = useNavigation();
@@ -44,83 +105,7 @@ export default function MyBets() {
   }
   );
 
-
-
   const router = useRouter();
-
- 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const docRef = doc(db, "data", "bets");
-  //     const docSnap = await getDoc(docRef);
-
-  //     if (docSnap.exists()) {
-       
-  //       setSampleBets(docSnap.data().bets);
-  //     } else {
-  //       // docSnap.data() will be undefined in this case
-  //       console.log("No such document!");
-  //     }
-
-  //   }
-  //   fetchData();
-  // }
-  //   , [sampleBets]);
-
-
-  const BetCard = ({ bet }) => (
-    <View style={styles.betCard}>
-      <View style={styles.betHeader}>
-        <Text style={styles.betAmount}>€{bet?.amount} {bet?.type}</Text>
-        <TouchableOpacity>
-          <Text style={{color: '#00FF9D', fontSize: 13, fontWeight: 'bold'}}>Share</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{ height: 1, backgroundColor: 'grey',marginBottom:'10' }} />
-
-      <View style={styles.selectionContainer}>
-      <View style={styles.iconOverlay}>
-        <FontAwesome name="circle" size={18} color="white" />
-        <MaterialIcons name="check-circle" size={20} color="#1A966E" style={styles.checkIcon} />
-      </View>
-        <View style={styles.selectionInfo}>
-          <Text style={styles.selectionText}>{bet?.selection} {bet?.odds}</Text>
-          <Text style={styles.betTypeText}>{bet?.betType}</Text>
-        </View>
-      </View>
-
-      <View style={styles.teamsContainer}>
-        <Text style={styles.teamText}>{bet?.team1}</Text>
-        <Text style={styles.teamText}>{bet?.team2}</Text>
-      </View>
-
-      <View style={styles.stakeReturnContainer}>
-        <View>
-          <Text style={styles.labelText}>Stake</Text>
-          <Text style={styles.valueText}>€{bet?.stake}</Text>
-        </View>
-        <View>
-          <Text style={styles.labelText}>Return</Text>
-          <Text style={{
-            color: 'lightgrey',
-            fontSize: 16,
-            fontWeight: 'bold',
-          }}>€{bet?.return}</Text>
-        </View>
-      </View>
-
-      {/* <View style={styles.returnedContainer}>
-      <MaterialIcons name="check-circle-outline" size={20} color="#00FF9D" />
-      
-        <Text style={styles.returnedText}>€{bet?.return} {bet?.status}</Text>
-      </View> */}
-       <View style={styles.returnedContainer}>
-      <MaterialIcons name="check-circle-outline" size={20} color="#00FF9D" />
-      
-        <Text style={styles.returnedText}>€{bet?.return} {bet?.status}</Text>
-      </View>
-    </View>
-  );
 
   return (
     <View style={styles.container}>
@@ -134,10 +119,10 @@ export default function MyBets() {
       />
       <View style={styles.header}>
         {/* <Text style={styles.sessionText}>Session 00:09</Text> */}
-        <Image 
-        source={require('../assets/images/image_prev_ui.png')}
-        style={{width: 100, height: 30, marginLeft: 'auto'}}
-          />
+        <Image
+          source={require('../assets/images/image_prev_ui.png')}
+          style={{ width: 100, height: 30, marginLeft: 'auto' }}
+        />
       </View>
 
       <Text style={styles.title}>My Bets</Text>
@@ -145,19 +130,19 @@ export default function MyBets() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersContainer}>
         {filters.map((filter) => (
           <TouchableOpacity
-        key={filter}
-        style={[
-          styles.filterButton,
-          activeFilter === filter && styles.activeFilter
-        ]}
-        onPress={() => setActiveFilter(filter)}
+            key={filter}
+            style={[
+              styles.filterButton,
+              activeFilter === filter && styles.activeFilter
+            ]}
+            onPress={() => setActiveFilter(filter)}
           >
-        <Text style={[
-          styles.filterText,
-          activeFilter === filter && styles.activeFilterText
-        ]}>
-          {filter}
-        </Text>
+            <Text style={[
+              styles.filterText,
+              activeFilter === filter && styles.activeFilterText
+            ]}>
+              {filter}
+            </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -173,31 +158,31 @@ export default function MyBets() {
 
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
-        <Octicons name="home" size={23} color="#8E8E93" />
-        <Text style={styles.navLabel}>€{totalBalance}</Text>
-        {/* <Image 
+          <Octicons name="home" size={21} color="#8E8E93" />
+          <Text style={styles.navLabel}>€{totalBalance}</Text>
+          {/* <Image 
         source={require('../../assets/images/home-removebg-preview.png')}
         style={styles.navIcon}
           />
           <Text style={styles.navLabel}>€0.60</Text> */}
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push('/all-sports')} style={[styles.navItem, styles.activeNavItem]}>
-          <AntDesign name="search1" size={23} color="#8E8E93" />
+          <AntDesign name="search1" size={21} color="#8E8E93" />
           <Text style={styles.navLabel}>All Sports</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
-        <Image 
+          <Image
             source={require('../assets/images/file (1).png')}
             style={styles.navIcon}
           />
           <Text style={styles.navLabel}>In-Play</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
-          <AntDesign name="checkcircle" size={23} color="#137a5a"  />
+          <AntDesign name="checkcircle" size={21} color="#137a5a" />
           <Text style={[styles.navLabel, styles.activeNavLabel]}>My Bets</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
-        <Image 
+          <Image
             source={require('../assets/images/casino_prev_ui.png')}
             style={styles.navIcon}
 
@@ -250,7 +235,7 @@ const styles = StyleSheet.create({
   filterText: {
     color: '#FFFFFF',
     fontSize: 12.5,
-    fontWeight:'semibold',
+    fontWeight: 'semibold',
   },
   activeFilterText: {
     color: '#000000',
@@ -272,7 +257,7 @@ const styles = StyleSheet.create({
   },
   betAmount: {
     color: '#26ffbb',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   selectionContainer: {
@@ -285,7 +270,7 @@ const styles = StyleSheet.create({
   },
   selectionText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   iconOverlay: {
@@ -319,11 +304,11 @@ const styles = StyleSheet.create({
   },
   labelText: {
     color: '#8E8E93',
-    fontSize: 14,
+    fontSize: 13,
   },
   valueText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
   },
 
@@ -355,14 +340,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 15,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 18,
+    paddingVertical: 16,
   },
   navItem: {
     alignItems: 'center',
   },
   navLabel: {
     color: '#8E8E93',
-    fontSize: 12,
+    fontSize: 11,
     marginTop: 4,
   },
   activeNavLabel: {
@@ -370,7 +355,7 @@ const styles = StyleSheet.create({
   },
   navIcon: {
     width: 40,
-    height: 24,
+    height: 22,
   },
   activeNavIcon: {
     tintColor: '#137a5a'

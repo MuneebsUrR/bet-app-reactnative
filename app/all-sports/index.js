@@ -167,7 +167,7 @@ export default function MyBets() {
 
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
-        <Octicons name="home" size={23} color="#8E8E93" />
+        <Octicons name="home" size={21} color="#8E8E93" />
         <Text style={styles.navLabel}>€{totalBalance}</Text>
         {/* <Image 
             source={require('../../assets/images/home-removebg-preview.png')}
@@ -176,7 +176,7 @@ export default function MyBets() {
           <Text style={styles.navLabel}>€0.60</Text> */}
         </TouchableOpacity>
         <View style={[styles.navItem, styles.activeNavItem]}>
-          <AntDesign name="search1" size={23} color="#137a5a" />
+          <AntDesign name="search1" size={21} color="#137a5a" />
           <Text style={[styles.navLabel, styles.activeNavLabel]}>All Sports</Text>
         </View>
         <TouchableOpacity style={styles.navItem}>
@@ -188,7 +188,7 @@ export default function MyBets() {
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem} onPress={() => router.push('/')}>
          
-          <MaterialIcons name="check-circle-outline" size={23} color="#8E8E93" />
+          <MaterialIcons name="check-circle-outline" size={21} color="#8E8E93" />
       
           <Text style={styles.navLabel}>My Bets</Text>
         </TouchableOpacity>
@@ -357,14 +357,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 15,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 18,
+    paddingVertical: 16,
   },
   navItem: {
     alignItems: 'center',
   },
   navLabel: {
     color: '#8E8E93',
-    fontSize: 12,
+    fontSize: 11,
     marginTop: 4,
   },
   activeNavLabel: {
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
   },
   navIcon: {
     width: 40,
-    height: 24,
+    height: 22,
   },
   activeNavIcon: {
     tintColor: '#137a5a'
