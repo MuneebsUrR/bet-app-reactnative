@@ -15,7 +15,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/unnamed.png",
-        "backgroundColor": "#007C5B"
+        "backgroundColor": "#126e51"
       },
       "package": "com.vanilla_icee.bet365"
     },
