@@ -40,7 +40,11 @@ const BetCard = ({ bet }) => {
           <View style={{ paddingLeft: 8 }}></View>
           {!isExpanded && <Text style={{ color: '#8E8E93', fontSize: 11, fontWeight: 'bold' }}> {bet?.selection} </Text>}
         </Text>
-          <Text style={{ color: '#00FF9D', fontSize: 13, fontWeight: 'bold' }}>Share</Text>
+         {isExpanded && <Text style={{ color: '#00FF9D', fontSize: 13, fontWeight: 'bold' }}>Share</Text>}
+          {!isExpanded && <TouchableOpacity onPress={toggleExpand} style={{backgroundColor:'#424645', paddingHorizontal:20, paddingVertical:3, borderRadius:3}}>
+             <Text style={{textAlign:'center',color:'#00FF9D', fontWeight:'bold', fontSize:12}}>€0.19</Text>
+             <Text style={{color:'#00FF9D', fontWeight:'bold',fontSize:12}}>Returned</Text>
+          </TouchableOpacity>}
 
       </View>
         </TouchableOpacity>
@@ -246,7 +250,7 @@ const styles = StyleSheet.create({
   },
   betCard: {
     backgroundColor: '#323b38',
-    borderRadius: 12,
+    borderRadius: 8,
     padding: 16,
     marginBottom: 16,
   },
