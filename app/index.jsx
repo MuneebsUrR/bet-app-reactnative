@@ -26,7 +26,7 @@ const BetCard = ({ bet }) => {
 
   const containerHeight = animatedHeight.interpolate({
     inputRange: [0, 1],
-    outputRange: [55, 266], // Adjust these values as needed
+    outputRange: [50, 266], // Adjust these values as needed
   });
 
   const minimizedTextOpacity = animatedHeight.interpolate({
@@ -87,7 +87,7 @@ const BetCard = ({ bet }) => {
                 height: 35,
                 borderRadius: 3,
                 position: 'relative',
-                top: -5,
+                top: -7.5,
               }}
             >
               <Text style={{ textAlign: 'center', color: '#00FF9D', fontWeight: 'bold', fontSize: 11.5 }}>
@@ -110,7 +110,7 @@ const BetCard = ({ bet }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 position: 'relative',
-                top: -5
+                top: -7.5
               }}
             >
               <Text style={{ color: '#d7d7d7', fontWeight: 'bold', fontSize: 11.5 }}>
