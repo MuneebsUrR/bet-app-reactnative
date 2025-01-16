@@ -12,52 +12,140 @@ import { useAppContext } from '@/context/AppContext';
 
 
 const BetCard = ({ bet }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const animatedHeight = useRef(new Animated.Value(1)).current;
+  const [isExpanded, setIsExpanded] = useState(false);
+  const animatedHeight = useRef(new Animated.Value(0)).current;
 
   const toggleExpand = () => {
-    Animated.spring(animatedHeight, {
+    Animated.timing(animatedHeight, {
       toValue: isExpanded ? 0 : 1,
+      duration: 240, // Smooth transition duration
       useNativeDriver: false,
-      tension: 40,
-      friction: 8
     }).start();
     setIsExpanded(!isExpanded);
   };
 
   const containerHeight = animatedHeight.interpolate({
     inputRange: [0, 1],
-    outputRange: [70, 278]
+    outputRange: [55, 266], // Adjust these values as needed
   });
 
-  const contentOpacity = animatedHeight;
+  const minimizedTextOpacity = animatedHeight.interpolate({
+    inputRange: [0, 0.2],
+    outputRange: [1, 0], // Gradual fade-out
+  });
+
+  const expandedContentOpacity = animatedHeight.interpolate({
+    inputRange: [0.8, 1],
+    outputRange: [0, 1], // Gradual fade-in
+  });
 
   return (
     <Animated.View style={[styles.betCard, { height: containerHeight, overflow: 'hidden' }]}>
-        <TouchableOpacity onPress={toggleExpand}>
-      <View style={styles.betHeader}>
-        <Text style={styles.betAmount}>€{bet?.amount} {bet?.type}
-          <View style={{ paddingLeft: 8 }}></View>
-          {!isExpanded && <Text style={{ color: '#8E8E93', fontSize: 11, fontWeight: 'bold' }}> {bet?.selection} </Text>}
-        </Text>
-         {isExpanded && <Text style={{ color: '#00FF9D', fontSize: 13, fontWeight: 'bold' }}>Share</Text>}
-          {!isExpanded && <TouchableOpacity onPress={toggleExpand} style={{backgroundColor:'#424645', paddingHorizontal:20, paddingVertical:3, borderRadius:3}}>
-             <Text style={{textAlign:'center',color:'#00FF9D', fontWeight:'bold', fontSize:12}}>€0.19</Text>
-             <Text style={{color:'#00FF9D', fontWeight:'bold',fontSize:12}}>Returned</Text>
-          </TouchableOpacity>}
+      <TouchableOpacity onPress={toggleExpand}>
+        <View style={styles.betHeader}>
+          <Text style={styles.betAmount}>
+            €{bet?.amount} {bet?.type}
+            <View style={{ paddingLeft: 8 }}></View>
+            <Animated.Text
+              style={[
+                {
+                  color: '#8E8E93',
+                  fontSize: 11,
+                  fontWeight: 'bold',
+                  opacity: minimizedTextOpacity,
+                  position: isExpanded ? 'absolute' : 'relative',
+                },
+              ]}
+            >
+              {!isExpanded && bet?.selection}
+            </Animated.Text>
+          </Text>
+          {isExpanded && bet?.return != '0.00' && <Text style={{ color: '#00FF9D', fontSize: 12, fontWeight: '600', marginBottom: 12 }}>
+            Share
+          </Text>}
+          {isExpanded && bet?.return == '0.00' &&
+            <View style={{ display: 'flex', flexDirection: 'row', marginBottom: -4 }}>
+              <Text style={{ color: '#00FF9D', fontSize: 12, fontWeight: '600', paddingRight: 30 }}>
+                Share
+              </Text>
+              <View style={{ height: 35, width: 90, backgroundColor: '#424645', position: 'relative', top: -6, borderRadius: 3, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ color: '#d7d7d7', fontWeight: 'bold', fontSize: 12 }}>
+                  Lost
+                </Text>
+              </View>
+            </View>
+          }
 
-      </View>
-        </TouchableOpacity>
-      {/* hiding the line if not isexpanded */}
+          {
+            !isExpanded && bet?.return != '0.00' &&
+
+            <TouchableOpacity
+              onPress={toggleExpand}
+              style={{
+                backgroundColor: '#424645',
+                width: 90,
+                height: 35,
+                borderRadius: 3,
+                position: 'relative',
+                top: -5,
+              }}
+            >
+              <Text style={{ textAlign: 'center', color: '#00FF9D', fontWeight: 'bold', fontSize: 11.5 }}>
+                €{bet?.return}
+              </Text>
+              <Text style={{ textAlign: 'center', color: '#00FF9D', fontWeight: 'bold', fontSize: 11.5 }}>Returned</Text>
+            </TouchableOpacity>
+          }
+          {
+            !isExpanded && bet?.return == '0.00' &&
+
+            <TouchableOpacity
+              onPress={toggleExpand}
+              style={{
+                backgroundColor: '#424645',
+                width: 90,
+                height: 35,
+                borderRadius: 3,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative',
+                top: -5
+              }}
+            >
+              <Text style={{ color: '#d7d7d7', fontWeight: 'bold', fontSize: 11.5 }}>
+                Lost
+              </Text>
+
+            </TouchableOpacity>
+          }
+
+
+
+
+        </View>
+      </TouchableOpacity>
+
       {isExpanded && <View style={{ height: 1, backgroundColor: 'grey', marginBottom: 10 }} />}
-      <Animated.View style={[styles.expandableContent, { opacity: contentOpacity }]}>
+      <Animated.View
+        style={[
+          styles.expandableContent,
+          {
+            opacity: expandedContentOpacity,
+          },
+        ]}
+      >
         <View style={styles.selectionContainer}>
           <View style={styles.iconOverlay}>
-            <FontAwesome name="circle" size={18} color="white" />
-            <MaterialIcons name="check-circle" size={20} color="#1A966E" style={styles.checkIcon} />
+            <FontAwesome name="circle" size={14} color="white" />
+            {bet?.return != '0.00' && <MaterialIcons name="check-circle" size={18} color="#1A966E" style={styles.checkIcon} />}
+            {bet?.return == '0.00' && <MaterialIcons name="cancel" size={18} color="#fc6767" style={styles.checkIcon} />}
+
           </View>
           <View style={styles.selectionInfo}>
-            <Text style={styles.selectionText}>{bet?.selection} {bet?.odds}</Text>
+            <Text style={styles.selectionText}>
+              {bet?.selection} <Text style={{ color: '#d7d7d7' }}>  {bet?.odds}</Text>
+            </Text>
             <Text style={styles.betTypeText}>{bet?.betType}</Text>
           </View>
         </View>
@@ -74,25 +162,33 @@ const BetCard = ({ bet }) => {
           </View>
           <View>
             <Text style={styles.labelText}>Return</Text>
-            <Text style={{
-              fontSize: 15,
-              color: 'lightgrey',
-              fontWeight: 'bold'
-            }}>€{bet?.return}</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: 'lightgrey',
+                fontWeight: 'bold',
+              }}
+            >
+              €{bet?.return}
+            </Text>
           </View>
         </View>
       </Animated.View>
+      <View style={[styles.returnedContainer]}>
+        {bet?.return != '0.00' &&
+          <MaterialIcons name="check-circle-outline" size={19} color="#00FF9D" />
 
-      <View style={[
-        styles.returnedContainer,
-      ]}>
-        <MaterialIcons name="check-circle-outline" size={19} color="#00FF9D" />
-        <Text style={styles.returnedText}>€{bet?.return} {bet?.status}</Text>
+        }
+        {bet?.return != '0.00' &&
+
+          <Text style={styles.returnedText}>€{bet?.return}  {bet?.status}</Text>
+        }
+
+        {bet?.return == '0.00' && <Text style={[styles.returnedText, { color: '#d7d7d7' }]}>{bet?.status}  €{bet?.return}</Text>}
       </View>
     </Animated.View>
   );
 };
-
 
 
 export default function MyBets() {
@@ -217,13 +313,14 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#FFFFFF',
-    fontSize: 30,
+    fontSize: 29,
     fontWeight: 'bold',
     padding: 16,
   },
   filtersContainer: {
     paddingHorizontal: 10,
     maxHeight: 50,
+    marginBottom:-10
   },
   filterButton: {
     paddingHorizontal: 8,
@@ -243,26 +340,28 @@ const styles = StyleSheet.create({
   },
   activeFilterText: {
     color: '#000000',
+    fontWeight:'bold'
   },
   betsContainer: {
     flex: 1,
-    padding: 16,
+    padding: 8,
   },
   betCard: {
     backgroundColor: '#323b38',
     borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
+    padding: 14,
+    marginBottom: 10,
   },
   betHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   betAmount: {
     color: '#26ffbb',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
+
   },
   selectionContainer: {
     flexDirection: 'row',
@@ -274,31 +373,31 @@ const styles = StyleSheet.create({
   },
   selectionText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 13.5,
     fontWeight: 'bold',
   },
   iconOverlay: {
     position: 'relative',
     width: 24,
     height: 24,
-    justifyContent: 'center',
+    justifyContent: '',
     alignItems: 'center',
   },
   checkIcon: {
     position: 'absolute',
-    top: 2,
-    left: 2,
+
+    top: -1
   },
   betTypeText: {
     color: '#8E8E93',
-    fontSize: 13,
+    fontSize: 12,
   },
   teamsContainer: {
     marginBottom: 16,
   },
   teamText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 12.5,
     marginBottom: 4,
   },
   stakeReturnContainer: {
@@ -312,7 +411,7 @@ const styles = StyleSheet.create({
   },
   valueText: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 'bold',
   },
 
@@ -324,27 +423,28 @@ const styles = StyleSheet.create({
     marginHorizontal: -16,
     marginBottom: -16,
     padding: 14,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
   },
   returnedText: {
     color: '#26ffbb',
     marginLeft: 8,
-    fontSize: 15,
+    fontSize: 13.5,
     fontWeight: 'bold',
   },
   historyText: {
     color: '#8E8E93',
     textAlign: 'center',
-    marginTop: 16,
+    marginTop: 12,
     marginBottom: 32,
+    fontSize: 13
   },
   bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 15,
+    padding: 8,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 11,
+    paddingVertical: 7.6,
   },
   navItem: {
     alignItems: 'center',

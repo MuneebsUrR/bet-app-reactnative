@@ -355,9 +355,9 @@ const styles = StyleSheet.create({
   bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 15,
+    padding: 8,
     backgroundColor: '#FFFFFF',
-    paddingVertical: 11,
+    paddingVertical: 7.6,
   },
   navItem: {
     alignItems: 'center',
