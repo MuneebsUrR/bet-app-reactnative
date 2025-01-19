@@ -60,16 +60,16 @@ const BetCard = ({ bet }) => {
               ellipsizeMode="tail"
             >
               {!isExpanded && (
-                bet?.isDoubleBet 
+                bet?.isoubleBet
                   ? (() => {
-                      const combinedText = `${bet?.selection}, ${bet?.selection2}`;
-                      return combinedText.length > 20
-                        ? `${combinedText.substring(0, 20)}...`
-                        : combinedText;
-                    })()
+                    const combinedText = `${bet?.selection}, ${bet?.selection2}`;
+                    return combinedText.length > 20
+                      ? `${combinedText.substring(0, 20)}...`
+                      : combinedText;
+                  })()
                   : (bet?.selection?.length > 20
-                      ? `${bet?.selection.substring(0, 20)}...`
-                      : bet?.selection)
+                    ? `${bet?.selection.substring(0, 20)}...`
+                    : bet?.selection)
               )}
             </Animated.Text>
           </Text>
@@ -188,7 +188,7 @@ const BetCard = ({ bet }) => {
             <View style={styles.teamsContainer}>
               <Text style={styles.teamText}>{bet?.team3}</Text>
               <Text style={styles.teamText}>{bet?.team4}</Text>
-             
+
             </View>
           </>
         )}
@@ -265,34 +265,65 @@ export default function MyBets() {
 
       <Text style={styles.title}>My Bets</Text>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersContainer}>
-        {filters.map((filter) => (
-          <TouchableOpacity
-            key={filter}
-            style={[
-              styles.filterButton,
-              activeFilter === filter && styles.activeFilter
-            ]}
-            onPress={() => setActiveFilter(filter)}
-          >
-            <Text style={[
-              styles.filterText,
-              activeFilter === filter && styles.activeFilterText
-            ]}>
-              {filter}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
       <ScrollView style={styles.betsContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersContainer}>
+          {filters.map((filter) => (
+            <TouchableOpacity
+              key={filter}
+              style={[
+                styles.filterButton,
+                activeFilter === filter && styles.activeFilter
+              ]}
+              onPress={() => setActiveFilter(filter)}
+            >
+              <Text style={[
+                styles.filterText,
+                activeFilter === filter && styles.activeFilterText
+              ]}>
+                {filter}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {sampleBets && sampleBets.map((bet) => (
+          <BetCard key={bet?.id} bet={bet} />
+        ))}
         {sampleBets && sampleBets.map((bet) => (
           <BetCard key={bet?.id} bet={bet} />
         ))}
         <Text style={styles.historyText}>
           View older settled bets in your Account History
         </Text>
+        {/* Footer */}
+        <View style={{marginTop:490,marginBottom:10}}>
+          <Image
+            source={require('../assets/images/footer.jpeg')}
+            style={{
+              width: '100%',
+              height: 400,
+              resizeMode: 'cover'
+            }}
+          />
+        </View>
+      <View style={{
+        paddingHorizontal:8,
+        marginBottom:40
+      }}>
+        <Text style={{color:'#999999',fontSize:10,fontWeight:'500'}}>
+          Server Time: {new Date().toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true 
+          })} CET
+        </Text>
+      </View>
+
+
       </ScrollView>
+
+
+
 
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
@@ -328,6 +359,8 @@ export default function MyBets() {
           <Text style={styles.navLabel}>Casino</Text>
         </TouchableOpacity>
       </View>
+
+
     </View>
   );
 }
@@ -356,9 +389,9 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   filtersContainer: {
-    paddingHorizontal: 10,
+
     maxHeight: 50,
-    marginBottom: -10
+    marginBottom: 9
   },
   filterButton: {
     paddingHorizontal: 8,
@@ -373,7 +406,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: '#FFFFFF',
-    fontSize: 12.5,
+    fontSize: 12,
     fontWeight: 'semibold',
   },
   activeFilterText: {
@@ -382,7 +415,7 @@ const styles = StyleSheet.create({
   },
   betsContainer: {
     flex: 1,
-    padding: 8,
+    paddingHorizontal: 8,
   },
   betCard: {
     backgroundColor: '#323b38',
@@ -502,5 +535,6 @@ const styles = StyleSheet.create({
   activeNavIcon: {
     tintColor: '#137a5a'
   },
+
 
 });
