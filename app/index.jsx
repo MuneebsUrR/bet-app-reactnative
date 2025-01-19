@@ -18,7 +18,7 @@ const BetCard = ({ bet }) => {
   const toggleExpand = () => {
     Animated.timing(animatedHeight, {
       toValue: isExpanded ? 0 : 1,
-      duration: 240, // Smooth transition duration
+      duration: 230, // Smooth transition duration
       useNativeDriver: false,
     }).start();
     setIsExpanded(!isExpanded);
@@ -26,7 +26,7 @@ const BetCard = ({ bet }) => {
 
   const containerHeight = animatedHeight.interpolate({
     inputRange: [0, 1],
-    outputRange: [50, 266], // Adjust these values as needed
+    outputRange: [50, bet?.isDoubleBet ? 376 : 266], // Adjust these values as needed
   });
 
   const minimizedTextOpacity = animatedHeight.interpolate({
@@ -56,8 +56,21 @@ const BetCard = ({ bet }) => {
                   position: isExpanded ? 'absolute' : 'relative',
                 },
               ]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
             >
-              {!isExpanded && bet?.selection}
+              {!isExpanded && (
+                bet?.isDoubleBet 
+                  ? (() => {
+                      const combinedText = `${bet?.selection}, ${bet?.selection2}`;
+                      return combinedText.length > 20
+                        ? `${combinedText.substring(0, 20)}...`
+                        : combinedText;
+                    })()
+                  : (bet?.selection?.length > 20
+                      ? `${bet?.selection.substring(0, 20)}...`
+                      : bet?.selection)
+              )}
             </Animated.Text>
           </Text>
           {isExpanded && bet?.return != '0.00' && <Text style={{ color: '#00FF9D', fontSize: 12, fontWeight: '600', marginBottom: 12 }}>
@@ -154,6 +167,31 @@ const BetCard = ({ bet }) => {
           <Text style={styles.teamText}>{bet?.team1}</Text>
           <Text style={styles.teamText}>{bet?.team2}</Text>
         </View>
+
+        {bet?.isDoubleBet && (
+          <>
+            {isExpanded && <View style={{ height: 1, backgroundColor: 'grey', marginBottom: 10, marginTop: -5 }} />}
+            <View style={styles.selectionContainer}>
+              <View style={styles.iconOverlay}>
+                <FontAwesome name="circle" size={14} color="white" />
+                {bet?.return != '0.00' && <MaterialIcons name="check-circle" size={18} color="#1A966E" style={styles.checkIcon} />}
+                {bet?.return == '0.00' && <MaterialIcons name="cancel" size={18} color="#fc6767" style={styles.checkIcon} />}
+
+              </View>
+              <View style={styles.selectionInfo}>
+                <Text style={styles.selectionText}>
+                  {bet?.selection2} <Text style={{ color: '#d7d7d7' }}>  {bet?.odds2}</Text>
+                </Text>
+                <Text style={styles.betTypeText}>{bet?.betType2}</Text>
+              </View>
+            </View>
+            <View style={styles.teamsContainer}>
+              <Text style={styles.teamText}>{bet?.team3}</Text>
+              <Text style={styles.teamText}>{bet?.team4}</Text>
+             
+            </View>
+          </>
+        )}
 
         <View style={styles.stakeReturnContainer}>
           <View>
@@ -320,7 +358,7 @@ const styles = StyleSheet.create({
   filtersContainer: {
     paddingHorizontal: 10,
     maxHeight: 50,
-    marginBottom:-10
+    marginBottom: -10
   },
   filterButton: {
     paddingHorizontal: 8,
@@ -340,7 +378,7 @@ const styles = StyleSheet.create({
   },
   activeFilterText: {
     color: '#000000',
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   betsContainer: {
     flex: 1,
