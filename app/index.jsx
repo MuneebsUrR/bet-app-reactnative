@@ -60,7 +60,7 @@ const BetCard = ({ bet }) => {
               ellipsizeMode="tail"
             >
               {!isExpanded && (
-                bet?.isoubleBet
+                bet?.isDoubleBet
                   ? (() => {
                     const combinedText = `${bet?.selection}, ${bet?.selection2}`;
                     return combinedText.length > 20
@@ -289,35 +289,35 @@ export default function MyBets() {
         {sampleBets && sampleBets.map((bet) => (
           <BetCard key={bet?.id} bet={bet} />
         ))}
-        {sampleBets && sampleBets.map((bet) => (
-          <BetCard key={bet?.id} bet={bet} />
-        ))}
+
         <Text style={styles.historyText}>
           View older settled bets in your Account History
         </Text>
         {/* Footer */}
-        <View style={{marginTop:490,marginBottom:10}}>
+        <View style={{ marginTop: 470, marginBottom: 10, zIndex: 1000 }}>
           <Image
             source={require('../assets/images/footer.jpeg')}
             style={{
               width: '100%',
-              height: 400,
+              height: 390,
               resizeMode: 'cover'
             }}
           />
+
+          <View style={{
+            paddingHorizontal: 8.5,
+            marginBottom: 30
+          }}>
+            <Text style={{ color: '#999999', fontSize: 9.5, fontWeight: '500' }}>
+              Server Time: {new Date().toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              })} CET
+            </Text>
+          </View>
         </View>
-      <View style={{
-        paddingHorizontal:8,
-        marginBottom:40
-      }}>
-        <Text style={{color:'#999999',fontSize:10,fontWeight:'500'}}>
-          Server Time: {new Date().toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: true 
-          })} CET
-        </Text>
-      </View>
+
 
 
       </ScrollView>
