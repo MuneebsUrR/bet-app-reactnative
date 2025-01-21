@@ -294,20 +294,26 @@ export default function MyBets() {
           View older settled bets in your Account History
         </Text>
         {/* Footer */}
-        <View style={{ marginTop: 470, marginBottom: 10, zIndex: 1000 }}>
+        <View style={{ marginTop: 470, marginBottom: 10 }}>
           <Image
             source={require('../assets/images/footer.jpeg')}
             style={{
               width: '100%',
               height: 390,
-              resizeMode: 'cover'
+              resizeMode: 'cover',
+              zIndex: 1000
+
             }}
           />
 
           <View style={{
-            paddingHorizontal: 8.5,
-            marginBottom: 30
+            paddingHorizontal: 8,
+            marginBottom: 30,
+            marginTop:-3.8
           }}>
+            <Text style={{ color: '#999999', fontSize: 9.5, fontWeight: '500',marginBottom:5 }}>
+            under <Text style={{fontWeight:'bold'}}>licence number 1690</Text> 
+            </Text>
             <Text style={{ color: '#999999', fontSize: 9.5, fontWeight: '500' }}>
               Server Time: {new Date().toLocaleTimeString('en-US', {
                 hour: '2-digit',
